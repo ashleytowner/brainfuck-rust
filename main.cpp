@@ -43,6 +43,16 @@ int locateMatch(string program, int index) {
 }
 
 int main(int argc, char const *argv[]) {
+	bool flag_i = false;
+	if (argc > 1) {
+		int index = 0;
+		while (argv[1][index] != '\0') {
+			if (argv[1][index] == 'i') {
+				flag_i = true;
+			}
+			index++;
+		}
+	}
 	Machine machine = Machine();
 	string program;
 	cin >> program;
@@ -67,7 +77,11 @@ int main(int argc, char const *argv[]) {
 				programCounter++;
 				break;
 			case '.':	 // Print value
-				cout << (char)machine.getCell();
+				if (!flag_i) {
+					cout << (char)machine.getCell();
+				} else {
+					cout << (int)machine.getCell() << " ";
+				}
 				programCounter++;
 				break;
 			case ',':	 // Take Input
