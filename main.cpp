@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#define TAPE_LENGTH 65536
 
 #include "Machine.cpp"
 
@@ -95,9 +96,10 @@ int main(int argc, char const* argv[]) {
 	}
 	// Transpile the program to C if the -c flag is enabled.
 	if (flag_c) {
-		string c_program =
-				"#include <stdio.h>\nint main() {\nchar ptr[30000] = {0};\nint i = "
-				"0;\n";
+		string c_program = "#include <stdio.h>\nint main() {\nchar ptr[" +
+											 to_string(TAPE_LENGTH) +
+											 "] = {0};\nint i = "
+											 "0;\n";
 		for (int i = 0; i < program.length(); i++) {
 			char instruction = program[i];
 			switch (instruction) {
@@ -174,7 +176,7 @@ int main(int argc, char const* argv[]) {
 				break;
 			case ',':	 // Take Input
 				char c;
-				std::cin >> c;
+				c = getchar();
 				machine.setCell(c);
 				programCounter++;
 				break;

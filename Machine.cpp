@@ -1,6 +1,5 @@
 #ifndef MACHINE
 #define MACHINE
-#define TAPE_LENGTH 65536
 
 #include <iomanip>
 #include <iostream>
@@ -10,6 +9,7 @@ class Machine {
  private:
 	uint8_t tape[TAPE_LENGTH];
 	int pointer;
+	int highestMemoryAccessed;
 
  public:
 	Machine();
@@ -25,6 +25,7 @@ class Machine {
 
 Machine::Machine() {
 	pointer = 0;
+	highestMemoryAccessed = 0;
 	for (int i = 0; i < TAPE_LENGTH; i++) {
 		tape[i] = 0;
 	}
@@ -32,6 +33,9 @@ Machine::Machine() {
 
 void Machine::movePointerRight() {
 	pointer = (pointer + 1);
+	if (pointer > highestMemoryAccessed) {
+		highestMemoryAccessed = pointer;
+	}
 	if (pointer > TAPE_LENGTH) {
 		throw "Out of Bounds";
 	}
@@ -53,7 +57,8 @@ void Machine::incrementCell() { tape[pointer]++; }
 void Machine::decrementCell() { tape[pointer]--; }
 
 void Machine::printMemoryDump() {
-	for (int i = 0; i < TAPE_LENGTH; i++) {
+	printf("\nPointer: %x", pointer);
+	for (int i = 0; i <= highestMemoryAccessed; i++) {
 		printf("\n%04x: %02x", i, (int)tape[i]);
 		// std::cout << i << ": " << std::hex << (int)tape[i] << std::endl;
 	}
