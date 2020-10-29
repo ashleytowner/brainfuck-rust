@@ -4,7 +4,7 @@ This is a simple [brainfuck](https://en.wikipedia.org/wiki/Brainfuck) interprete
 
 ## Specifications
 
-This brainfuck interpreter has a tape length of 65536 (2^16) cells, which wraps, each containing a 1 byte number.
+This brainfuck interpreter has a tape length of 65536 (2^16) cells, which wraps, each containing 1 byte.
 
 ### Instructions
 
