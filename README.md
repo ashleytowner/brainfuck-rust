@@ -9,3 +9,4 @@ This brainfuck interpreter has a tape length of 2048 cells, which wraps, each co
 ## Commandline Args
 
 - `-i` print outputs as integers, rather than characters.
+- `-c` transpile BF program to C, and print to stdout.

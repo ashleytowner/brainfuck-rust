@@ -49,6 +49,7 @@ int main(int argc, char const *argv[]) {
 	string file = "";
 	string program;
 	bool flag_i = false;
+	bool flag_c = false;
 	if (argc == 1) {
 		std::cin >> program;
 	} else if (argc == 2) {
@@ -57,8 +58,15 @@ int main(int argc, char const *argv[]) {
 		file = argv[2];
 		int index = 0;
 		while (argv[1][index] != '\0') {
-			if (argv[1][index] == 'i') {
-				flag_i = true;
+			switch (argv[1][index]) {
+				case 'i':
+					flag_i = true;
+					break;
+				case 'c':
+					flag_c = true;
+					break;
+				default:
+					break;
 			}
 			index++;
 		}
@@ -66,7 +74,6 @@ int main(int argc, char const *argv[]) {
 		cerr << usage << endl;
 		return 1;
 	}
-	Machine machine = Machine();
 	if (file.length() > 0) {
 		ifstream infile(file);
 		string line;
@@ -74,6 +81,46 @@ int main(int argc, char const *argv[]) {
 			program += line;
 		}
 	}
+	if (flag_c) {
+		string c_program =
+				"#include <stdio.h>\nchar ptr[30000] = {0};\nint i = 0;\nint main() "
+				"{\n";
+		for (int i = 0; i < program.length(); i++) {
+			char instruction = program[i];
+			switch (instruction) {
+				case '+':
+					c_program += "++ptr[i];\n";
+					break;
+				case '-':
+					c_program += "--ptr[i];\n";
+					break;
+				case '<':
+					c_program += "--i;\n";
+					break;
+				case '>':
+					c_program += "++i;\n";
+					break;
+				case ',':
+					c_program += "ptr[i]=getchar();\n";
+					break;
+				case '.':
+					c_program += "putchar(ptr[i]);\n";
+					break;
+				case '[':
+					c_program += "while (ptr[i]) {\n";
+					break;
+				case ']':
+					c_program += "}\n";
+					break;
+				default:
+					break;
+			}
+		}
+		c_program += "return 0;\n}";
+		std::cout << c_program << endl;
+		return 0;
+	}
+	Machine machine = Machine();
 	int programCounter = 0;
 	while (programCounter < program.length()) {
 		char instruction = program[programCounter];
@@ -96,9 +143,9 @@ int main(int argc, char const *argv[]) {
 				break;
 			case '.':	 // Print value
 				if (!flag_i) {
-					cout << (char)machine.getCell();
+					std::cout << (char)machine.getCell();
 				} else {
-					cout << (int)machine.getCell() << " ";
+					std::cout << (int)machine.getCell() << " ";
 				}
 				programCounter++;
 				break;
