@@ -1,6 +1,10 @@
 #ifndef MACHINE
 #define MACHINE
-#define TAPE_LENGTH 2048
+#define TAPE_LENGTH 65536
+
+#include <iomanip>
+#include <iostream>
+#include <string>
 
 class Machine {
  private:
@@ -15,6 +19,7 @@ class Machine {
 	void setCell(char);
 	void incrementCell();
 	void decrementCell();
+	void printMemoryDump();
 	~Machine();
 };
 
@@ -46,6 +51,14 @@ void Machine::setCell(char value) { tape[pointer] = (uint8_t)value; }
 void Machine::incrementCell() { tape[pointer]++; }
 
 void Machine::decrementCell() { tape[pointer]--; }
+
+void Machine::printMemoryDump() {
+	for (int i = 0; i < TAPE_LENGTH; i++) {
+		printf("\n%04x: %02x", i, (int)tape[i]);
+		// std::cout << i << ": " << std::hex << (int)tape[i] << std::endl;
+	}
+	std::cout << std::endl;
+}
 
 Machine::~Machine() {}
 

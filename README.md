@@ -4,7 +4,7 @@ This is a simple [brainfuck](https://en.wikipedia.org/wiki/Brainfuck) interprete
 
 ## Specifications
 
-This brainfuck interpreter has a tape length of 2048 cells, which wraps, each containing a 1 byte number.
+This brainfuck interpreter has a tape length of 65536 (2^16) cells, which wraps, each containing a 1 byte number.
 
 ### Instructions
 
@@ -23,3 +23,4 @@ This brainfuck interpreter has a tape length of 2048 cells, which wraps, each co
 
 - `-i` print outputs as integers, rather than characters.
 - `-c` transpile BF program to C, and print to stdout.
+- `-m` print the tape at the end.

@@ -50,12 +50,13 @@ int locateMatch(string program, int index) {
 }
 
 int main(int argc, char const* argv[]) {
-	string usage = "Usage: bfi [-ic] file";
+	string usage = "Usage: bfi [-icm] file";
 	string file = "";
 	/// The text of the Brainfuck program.
 	string program;
 	bool flag_i = false;
 	bool flag_c = false;
+	bool flag_m = false;
 	/* If no arguments are supplied,
 	take BF program from stdin */
 	if (argc == 1) {
@@ -73,6 +74,9 @@ int main(int argc, char const* argv[]) {
 				case 'c':
 					flag_c = true;
 					break;
+				case 'm':
+					flag_m = true;
+					break;
 				default:
 					break;
 			}
@@ -89,7 +93,7 @@ int main(int argc, char const* argv[]) {
 			program += line;
 		}
 	}
-	// Transpile the program to c if the -c flag is enabled.
+	// Transpile the program to C if the -c flag is enabled.
 	if (flag_c) {
 		string c_program =
 				"#include <stdio.h>\nint main() {\nchar ptr[30000] = {0};\nint i = "
@@ -201,6 +205,9 @@ int main(int argc, char const* argv[]) {
 			default:
 				programCounter++;
 		}
+	}
+	if (flag_m) {
+		machine.printMemoryDump();
 	}
 	return 0;
 }
