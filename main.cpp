@@ -7,6 +7,7 @@
 
 using namespace std;
 
+/// Locate a corresponding [ or ]
 int locateMatch(string program, int index) {
 	char token = program[index];
 	if (token == '[') {
@@ -47,14 +48,17 @@ int locateMatch(string program, int index) {
 int main(int argc, char const *argv[]) {
 	string usage = "Usage: bfi [-ic] file";
 	string file = "";
+	/// The text of the Brainfuck program.
 	string program;
 	bool flag_i = false;
 	bool flag_c = false;
+	/* If no arguments are supplied,
+	take BF program from stdin */
 	if (argc == 1) {
 		std::cin >> program;
-	} else if (argc == 2) {
+	} else if (argc == 2) {	 // If filename supplied, take program from file.
 		file = argv[1];
-	} else if (argc == 3) {
+	} else if (argc == 3) {	 // ^ and if additional flags are supplied, note them.
 		file = argv[2];
 		int index = 0;
 		while (argv[1][index] != '\0') {
@@ -81,6 +85,7 @@ int main(int argc, char const *argv[]) {
 			program += line;
 		}
 	}
+	// Transpile the program to c if the -c flag is enabled.
 	if (flag_c) {
 		string c_program =
 				"#include <stdio.h>\nint main() {\nchar ptr[30000] = {0};\nint i = "
@@ -125,19 +130,19 @@ int main(int argc, char const *argv[]) {
 	while (programCounter < program.length()) {
 		char instruction = program[programCounter];
 		switch (instruction) {
-			case '+':
+			case '+':	 // Increment data at pointer
 				machine.incrementCell();
 				programCounter++;
 				break;
-			case '-':
+			case '-':	 // Decrement data at pointer
 				machine.decrementCell();
 				programCounter++;
 				break;
-			case '>':
+			case '>':	 // Move pointer right
 				machine.movePointerRight();
 				programCounter++;
 				break;
-			case '<':
+			case '<':	 // Move pointer left
 				machine.movePointerLeft();
 				programCounter++;
 				break;
