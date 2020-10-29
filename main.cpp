@@ -1,4 +1,6 @@
+#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "Machine.cpp"
@@ -44,12 +46,12 @@ int locateMatch(string program, int index) {
 
 int main(int argc, char const *argv[]) {
 	string usage = "Usage: bfi [-i] file";
+	string file;
 	bool flag_i = false;
-	if (argc == 1) {
-		cerr << usage << endl;
-		return 1;
-	}
-	if (argc == 3) {
+	if (argc == 2) {
+		file = argv[1];
+	} else if (argc == 3) {
+		file = argv[2];
 		int index = 0;
 		while (argv[1][index] != '\0') {
 			if (argv[1][index] == 'i') {
@@ -57,10 +59,14 @@ int main(int argc, char const *argv[]) {
 			}
 			index++;
 		}
+	} else {
+		cerr << usage << endl;
+		return 1;
 	}
 	Machine machine = Machine();
 	string program;
-	cin >> program;
+	ifstream infile(file);
+	getline(infile, program);
 	int programCounter = 0;
 	while (programCounter < program.length()) {
 		char instruction = program[programCounter];
@@ -90,6 +96,11 @@ int main(int argc, char const *argv[]) {
 				programCounter++;
 				break;
 			case ',':	 // Take Input
+				char c;
+				std::cin >> c;
+				machine.setCell(c);
+				programCounter++;
+				break;
 			case '[':	 // Jump if Zero
 				if (machine.getCell() == 0) {
 					programCounter = locateMatch(program, programCounter);
