@@ -83,8 +83,8 @@ int main(int argc, char const *argv[]) {
 	}
 	if (flag_c) {
 		string c_program =
-				"#include <stdio.h>\nchar ptr[30000] = {0};\nint i = 0;\nint main() "
-				"{\n";
+				"#include <stdio.h>\nint main() {\nchar ptr[30000] = {0};\nint i = "
+				"0;\n";
 		for (int i = 0; i < program.length(); i++) {
 			char instruction = program[i];
 			switch (instruction) {
