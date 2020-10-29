@@ -46,9 +46,12 @@ int locateMatch(string program, int index) {
 
 int main(int argc, char const *argv[]) {
 	string usage = "Usage: bfi [-i] file";
-	string file;
+	string file = "";
+	string program;
 	bool flag_i = false;
-	if (argc == 2) {
+	if (argc == 1) {
+		std::cin >> program;
+	} else if (argc == 2) {
 		file = argv[1];
 	} else if (argc == 3) {
 		file = argv[2];
@@ -64,9 +67,13 @@ int main(int argc, char const *argv[]) {
 		return 1;
 	}
 	Machine machine = Machine();
-	string program;
-	ifstream infile(file);
-	getline(infile, program);
+	if (file.length() > 0) {
+		ifstream infile(file);
+		string line;
+		while (getline(infile, line)) {
+			program += line;
+		}
+	}
 	int programCounter = 0;
 	while (programCounter < program.length()) {
 		char instruction = program[programCounter];
@@ -116,8 +123,7 @@ int main(int argc, char const *argv[]) {
 				}
 				break;
 			default:
-				cerr << "Syntax Error at position: " << programCounter << endl;
-				return 1;
+				programCounter++;
 		}
 	}
 	return 0;
