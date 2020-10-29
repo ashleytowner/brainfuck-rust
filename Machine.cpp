@@ -25,9 +25,19 @@ Machine::Machine() {
 	}
 }
 
-void Machine::movePointerRight() { pointer = (pointer + 1) % TAPE_LENGTH; }
+void Machine::movePointerRight() {
+	pointer = (pointer + 1);
+	if (pointer > TAPE_LENGTH) {
+		throw "Out of Bounds";
+	}
+}
 
-void Machine::movePointerLeft() { pointer = (pointer - 1) % TAPE_LENGTH; }
+void Machine::movePointerLeft() {
+	pointer = (pointer - 1);
+	if (pointer < 0) {
+		throw "Out of Bounds";
+	}
+}
 
 uint8_t Machine::getCell() { return tape[pointer]; }
 

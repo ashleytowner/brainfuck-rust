@@ -24,7 +24,9 @@ int locateMatch(string program, int index) {
 			}
 			index++;
 		}
-		return -1;
+		string err = "No matching ']' found for '[' at ";
+		err += to_string(index);
+		throw err;
 	} else if (token == ']') {
 		int depth = 0;
 		index--;
@@ -39,13 +41,15 @@ int locateMatch(string program, int index) {
 			}
 			index--;
 		}
-		return -1;
+		string err = "No matching '[' found for ']' at ";
+		err += to_string(index);
+		throw err;
 	} else {
 		return -1;
 	}
 }
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const* argv[]) {
 	string usage = "Usage: bfi [-ic] file";
 	string file = "";
 	/// The text of the Brainfuck program.
@@ -139,11 +143,21 @@ int main(int argc, char const *argv[]) {
 				programCounter++;
 				break;
 			case '>':	 // Move pointer right
-				machine.movePointerRight();
+				try {
+					machine.movePointerRight();
+				} catch (char const* e) {
+					std::cerr << "Error: " << e << std::endl;
+					return 1;
+				}
 				programCounter++;
 				break;
 			case '<':	 // Move pointer left
-				machine.movePointerLeft();
+				try {
+					machine.movePointerLeft();
+				} catch (char const* e) {
+					std::cerr << "Error: " << e << std::endl;
+					return 1;
+				}
 				programCounter++;
 				break;
 			case '.':	 // Print value
@@ -162,14 +176,24 @@ int main(int argc, char const *argv[]) {
 				break;
 			case '[':	 // Jump if Zero
 				if (machine.getCell() == 0) {
-					programCounter = locateMatch(program, programCounter);
+					try {
+						programCounter = locateMatch(program, programCounter);
+					} catch (string e) {
+						std::cerr << "Error: " << e << std::endl;
+						return 1;
+					}
 				} else {
 					programCounter++;
 				}
 				break;
 			case ']':	 // Jump Unless Zero
 				if (machine.getCell() != 0) {
-					programCounter = locateMatch(program, programCounter);
+					try {
+						programCounter = locateMatch(program, programCounter);
+					} catch (string e) {
+						std::cerr << "Error: " << e << std::endl;
+						return 1;
+					}
 				} else {
 					programCounter++;
 				}
