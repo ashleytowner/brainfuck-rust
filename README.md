@@ -24,3 +24,9 @@ This brainfuck interpreter has a tape length of 65536 (2^16) cells, each contain
 - `-i` print outputs as integers, rather than characters.
 - `-c` transpile BF program to C, and print to stdout.
 - `-m` print the tape at the end.
+
+## Example
+
+```bf
+++++++++[>++++++++<-]>++.B<++++[>++++<-]>.R<++++[>----<-]>-.A++++++++.I+++++.N--------.F<++++[>++++<-]>-.U<++++[>----<-]>--.C++++++++.K
+```
