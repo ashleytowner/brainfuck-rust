@@ -45,7 +45,7 @@ int locateMatch(string program, int index) {
 }
 
 int main(int argc, char const *argv[]) {
-	string usage = "Usage: bfi [-i] file";
+	string usage = "Usage: bfi [-ic] file";
 	string file = "";
 	string program;
 	bool flag_i = false;
