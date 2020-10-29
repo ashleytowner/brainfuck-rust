@@ -43,8 +43,13 @@ int locateMatch(string program, int index) {
 }
 
 int main(int argc, char const *argv[]) {
+	string usage = "Usage: bfi [-i] file";
 	bool flag_i = false;
-	if (argc > 1) {
+	if (argc == 1) {
+		cerr << usage << endl;
+		return 1;
+	}
+	if (argc == 3) {
 		int index = 0;
 		while (argv[1][index] != '\0') {
 			if (argv[1][index] == 'i') {

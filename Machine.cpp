@@ -12,7 +12,7 @@ class Machine {
 	void movePointerRight();
 	void movePointerLeft();
 	uint8_t getCell();
-	void setCell(int);
+	void setCell(char);
 	void incrementCell();
 	void decrementCell();
 	~Machine();
@@ -31,7 +31,7 @@ void Machine::movePointerLeft() { pointer = (pointer - 1) % TAPE_LENGTH; }
 
 uint8_t Machine::getCell() { return tape[pointer]; }
 
-void Machine::setCell(int value) { tape[pointer] = value; }
+void Machine::setCell(char value) { tape[pointer] = (uint8_t)value; }
 
 void Machine::incrementCell() { tape[pointer]++; }
 
