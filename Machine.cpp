@@ -57,10 +57,9 @@ void Machine::incrementCell() { tape[pointer]++; }
 void Machine::decrementCell() { tape[pointer]--; }
 
 void Machine::printMemoryDump() {
-	printf("\nPointer: %x", pointer);
+	printf("\nPointer: %04x", pointer);
 	for (int i = 0; i <= highestMemoryAccessed; i++) {
 		printf("\n%04x: %02x", i, (int)tape[i]);
-		// std::cout << i << ": " << std::hex << (int)tape[i] << std::endl;
 	}
 	std::cout << std::endl;
 }
