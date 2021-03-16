@@ -21,7 +21,8 @@ This brainfuck interpreter has a tape length of 65536 (2^16) cells, each contain
 
 ## Commandline Args
 
-- `-i` print outputs as integers, rather than characters.
+- `-d` Display output as decimal numbers rather than ASCII characters
+- `-x` Display output as hexadecimal numbers rather than ASCII characters
 - `-c` transpile BF program to C, and print to stdout.
 - `-m` print the tape at the end.
 

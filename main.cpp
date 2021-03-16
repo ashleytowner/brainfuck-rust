@@ -100,7 +100,7 @@ int main(int argc, char const* argv[]) {
     string line;
     while (getline(infile, line)) {
       if (line[0] != '#' || line[1] != '!') {
-        program += line + "\n";
+        program += line;
       }
     }
   }
