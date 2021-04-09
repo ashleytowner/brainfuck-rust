@@ -2,9 +2,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#define TAPE_LENGTH 65536
 
-#include "Machine.cpp"
+#include "Machine.h"
+#include "TapeLength.h"
 
 using namespace std;
 
