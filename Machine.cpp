@@ -1,46 +1,61 @@
-#include "TapeLength.h"
+#include <iostream>
 #include "Machine.h"
+#include "Cell.h"
 
 Machine::Machine() {
-	pointer = 0;
-	highestMemoryAccessed = 0;
-	for (int i = 0; i < TAPE_LENGTH; i++) {
-		tape[i] = 0;
-	}
+	this->currentCell = new Cell();
+}
+
+uint8_t Machine::getCell() {
+	return this->currentCell->value;
 }
 
 void Machine::movePointerRight() {
-	pointer = (pointer + 1);
-	if (pointer > highestMemoryAccessed) {
-		highestMemoryAccessed = pointer;
+	if (this->currentCell->next == nullptr) {
+		this->currentCell->next = new Cell(true, this->currentCell);
 	}
-	if (pointer > TAPE_LENGTH) {
-		throw "Out of Bounds";
-	}
+	this->currentCell = this->currentCell->next;
 }
 
 void Machine::movePointerLeft() {
-	pointer = (pointer - 1);
-	if (pointer < 0) {
-		throw "Out of Bounds";
+	if (this->currentCell->prev == nullptr) {
+		this->currentCell->prev = new Cell(false, this->currentCell);
 	}
+	this->currentCell = this->currentCell->prev;
 }
 
-uint8_t Machine::getCell() { return tape[pointer]; }
+void Machine::incrementCell() {
+	this->currentCell->value++;
+}
 
-void Machine::setCell(char value) { tape[pointer] = (uint8_t)value; }
+void Machine::decrementCell() {
+	this->currentCell->value--;
+}
 
-void Machine::incrementCell() { tape[pointer]++; }
-
-void Machine::decrementCell() { tape[pointer]--; }
+void Machine::setCell(char val) {
+	this->currentCell->value = val;
+}
 
 void Machine::printMemoryDump() {
-	printf("\nPointer: %04x", pointer);
-	for (int i = 0; i <= highestMemoryAccessed; i++) {
-		printf("\n%04x: %02x", i, (int)tape[i]);
+	Cell* current = this->currentCell;
+	while (current->prev != nullptr) {
+		current = current->prev;
+	}
+	while (current != nullptr) {
+		std::cout << current->value;
+		current = current->next;
 	}
 	std::cout << std::endl;
 }
 
-Machine::~Machine() {}
-
+Machine::~Machine() {
+	Cell* current = this->currentCell;
+	while (current->prev != nullptr) {
+		current = current->prev;
+	}
+	while (current != nullptr) {
+		Cell* last = current;
+		current = current->next;
+		delete last;
+	}
+}

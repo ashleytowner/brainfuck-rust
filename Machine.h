@@ -1,4 +1,5 @@
 #include "TapeLength.h"
+#include "Cell.h"
 
 #ifndef MACHINE
 #define MACHINE
@@ -13,6 +14,7 @@ class Machine {
 	uint8_t tape[TAPE_LENGTH];
 	int pointer;
 	int highestMemoryAccessed;
+	Cell* currentCell;
 
  public:
 	Machine();
