@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 struct Tape {
     pointer: usize,
     vec: Vec<u8>
@@ -66,14 +67,14 @@ impl Tape {
 
 struct Program {
     commands: Vec<char>,
-    open_loops: u16,
     pointer: usize,
-    tape: Tape
+    tape: Tape,
+    out: Vec<char>
 }
 
 impl Program {
     fn new() -> Program {
-        Program { commands: Vec::new(), open_loops: 0, pointer: 0, tape: Tape::new() }
+        Program { commands: Vec::new(), pointer: 0, tape: Tape::new(), out: Vec::new() }
     }
 
     fn feed_char(&mut self, cmd: char) {
@@ -96,6 +97,41 @@ impl Program {
         self.commands[self.pointer]
     }
 
+    fn locate_matching_bracket(vec: &Vec<char>, pointer: usize) -> Option<usize> {
+        let mut depth = 0;
+        match vec[pointer] {
+            ']' => {
+                for n in (0..pointer-1).rev() {
+                    if vec[n] == '[' && depth == 0 {
+                        return Some(n);
+                    }
+                    if vec[n] == ']' {
+                        depth += 1;
+                    }
+                    if vec[n] == '[' {
+                        depth -= 1;
+                    }
+                }
+                return None;
+            },
+            '[' => {
+                for n in pointer+1..vec.len() {
+                    if vec[n] == ']' && depth == 0 {
+                        return Some(n);
+                    }
+                    if vec[n] == '[' {
+                        depth += 1;
+                    }
+                    if vec[n] == ']' {
+                        depth -= 1;
+                    }
+                }
+                return None;
+            },
+            _ => None,
+        }
+    }
+
     fn execute(&mut self) {
         if self.pointer >= self.commands.len() {
             return;
@@ -105,7 +141,28 @@ impl Program {
             '-' => self.tape.decrement(),
             '>' => self.tape.shift_right(),
             '<' => self.tape.shift_left(),
-            '.' => println!("{}", self.tape.char()),
+            '.' => {
+                self.out.push(self.tape.char());
+                println!("{}", self.tape.char());
+            },
+            '[' => {
+                if self.tape.get() == 0 {
+                    self.pointer = match Program::locate_matching_bracket(&self.commands, self.pointer) {
+                        None => self.pointer,
+                        Some(i) => i + 1
+                    }
+                } else {
+                    self.pointer += 1;
+                };
+                self.execute();
+            },
+            ']' => {
+                self.pointer = match Program::locate_matching_bracket(&self.commands, self.pointer) {
+                    None => self.pointer,
+                    Some(i) => i
+                };
+                self.execute();
+            }
             _ => ()
         };
         self.pointer += 1;
@@ -115,8 +172,8 @@ impl Program {
 
 fn main() {
     let mut program = Program::new();
-    program.feed_line("+++++++++++++++++++++++++++++++++...");
-    program.execute();
+    // program.feed_line("+++++[>++++++<-]>+++...");
+    // program.execute();
 }
 
 #[cfg(test)]
@@ -153,5 +210,41 @@ mod tests {
         let mut tape = Tape::new();
         tape.set(65);
         assert_eq!(tape.char(), 'A');
+    }
+
+    #[test]
+    fn bracket_matching() {
+        assert_eq!(
+            Program::locate_matching_bracket(
+                &vec!['+','[','+',']','-'],
+                1).unwrap(),
+            3
+        );
+        assert_eq!(
+            Program::locate_matching_bracket(
+                &vec!['+','[','+',']','-'],
+                3).unwrap(),
+            1
+        );
+        assert_eq!(
+            Program::locate_matching_bracket(
+                &vec!['+', '+', '+', '+', '+', '[', '>', '+', '+', '+', '+', '+', '+', '<', '-', ']', '+', '+', '+', '.'],
+            5).unwrap(),
+            15
+        );
+        assert_eq!(
+            Program::locate_matching_bracket(
+                &vec!['+', '+', '+', '+', '+', '[', '>', '+', '+', '+', '+', '+', '+', '<', '-', ']', '+', '+', '+', '.'],
+            15).unwrap(),
+            5
+        );
+    }
+
+    #[test]
+    fn hello_world() {
+        let mut program = Program::new();
+        program.feed_line(">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<+ +.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>- ]<+.");
+        program.execute();
+        assert_eq!(program.out, vec!['H','e','l','l','o',',',' ','W','o','r','l','d','!'])
     }
 }
