@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 struct Tape {
     pointer: usize,
-    vec: Vec<u8>
+    vec: Vec<u8>,
 }
 
 impl Tape {
@@ -69,12 +69,17 @@ struct Program {
     commands: Vec<char>,
     pointer: usize,
     tape: Tape,
-    out: Vec<char>
+    out: Vec<char>,
 }
 
 impl Program {
     fn new() -> Program {
-        Program { commands: Vec::new(), pointer: 0, tape: Tape::new(), out: Vec::new() }
+        Program {
+            commands: Vec::new(),
+            pointer: 0,
+            tape: Tape::new(),
+            out: Vec::new(),
+        }
     }
 
     fn feed_char(&mut self, cmd: char) {
@@ -101,7 +106,7 @@ impl Program {
         let mut depth = 0;
         match vec[pointer] {
             ']' => {
-                for n in (0..pointer-1).rev() {
+                for n in (0..pointer - 1).rev() {
                     if vec[n] == '[' && depth == 0 {
                         return Some(n);
                     }
@@ -113,9 +118,9 @@ impl Program {
                     }
                 }
                 return None;
-            },
+            }
             '[' => {
-                for n in pointer+1..vec.len() {
+                for n in pointer + 1..vec.len() {
                     if vec[n] == ']' && depth == 0 {
                         return Some(n);
                     }
@@ -127,7 +132,7 @@ impl Program {
                     }
                 }
                 return None;
-            },
+            }
             _ => None,
         }
     }
@@ -144,37 +149,35 @@ impl Program {
             '.' => {
                 self.out.push(self.tape.char());
                 println!("{}", self.tape.char());
-            },
+            }
             '[' => {
                 if self.tape.get() == 0 {
-                    self.pointer = match Program::locate_matching_bracket(&self.commands, self.pointer) {
-                        None => self.pointer,
-                        Some(i) => i + 1
-                    }
+                    self.pointer =
+                        match Program::locate_matching_bracket(&self.commands, self.pointer) {
+                            None => self.pointer,
+                            Some(i) => i + 1,
+                        }
                 } else {
                     self.pointer += 1;
                 };
                 self.execute();
-            },
+            }
             ']' => {
-                self.pointer = match Program::locate_matching_bracket(&self.commands, self.pointer) {
+                self.pointer = match Program::locate_matching_bracket(&self.commands, self.pointer)
+                {
                     None => self.pointer,
-                    Some(i) => i
+                    Some(i) => i,
                 };
                 self.execute();
             }
-            _ => ()
+            _ => (),
         };
         self.pointer += 1;
         self.execute();
     }
 }
 
-fn main() {
-    let mut program = Program::new();
-    // program.feed_line("+++++[>++++++<-]>+++...");
-    // program.execute();
-}
+fn main() {}
 
 #[cfg(test)]
 mod tests {
@@ -215,27 +218,33 @@ mod tests {
     #[test]
     fn bracket_matching() {
         assert_eq!(
-            Program::locate_matching_bracket(
-                &vec!['+','[','+',']','-'],
-                1).unwrap(),
+            Program::locate_matching_bracket(&vec!['+', '[', '+', ']', '-'], 1).unwrap(),
             3
         );
         assert_eq!(
-            Program::locate_matching_bracket(
-                &vec!['+','[','+',']','-'],
-                3).unwrap(),
+            Program::locate_matching_bracket(&vec!['+', '[', '+', ']', '-'], 3).unwrap(),
             1
         );
         assert_eq!(
             Program::locate_matching_bracket(
-                &vec!['+', '+', '+', '+', '+', '[', '>', '+', '+', '+', '+', '+', '+', '<', '-', ']', '+', '+', '+', '.'],
-            5).unwrap(),
+                &vec![
+                    '+', '+', '+', '+', '+', '[', '>', '+', '+', '+', '+', '+', '+', '<', '-', ']',
+                    '+', '+', '+', '.'
+                ],
+                5
+            )
+            .unwrap(),
             15
         );
         assert_eq!(
             Program::locate_matching_bracket(
-                &vec!['+', '+', '+', '+', '+', '[', '>', '+', '+', '+', '+', '+', '+', '<', '-', ']', '+', '+', '+', '.'],
-            15).unwrap(),
+                &vec![
+                    '+', '+', '+', '+', '+', '[', '>', '+', '+', '+', '+', '+', '+', '<', '-', ']',
+                    '+', '+', '+', '.'
+                ],
+                15
+            )
+            .unwrap(),
             5
         );
     }
@@ -245,6 +254,9 @@ mod tests {
         let mut program = Program::new();
         program.feed_line(">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<+ +.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>- ]<+.");
         program.execute();
-        assert_eq!(program.out, vec!['H','e','l','l','o',',',' ','W','o','r','l','d','!'])
+        assert_eq!(
+            program.out,
+            vec!['H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd', '!']
+        )
     }
 }
