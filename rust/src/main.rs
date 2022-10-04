@@ -64,16 +64,59 @@ impl Tape {
     }
 }
 
+struct Program {
+    commands: Vec<char>,
+    open_loops: u16,
+    pointer: usize,
+    tape: Tape
+}
+
+impl Program {
+    fn new() -> Program {
+        Program { commands: Vec::new(), open_loops: 0, pointer: 0, tape: Tape::new() }
+    }
+
+    fn feed_char(&mut self, cmd: char) {
+        let byte = match cmd {
+            '+' | '-' | '>' | '<' | '[' | ']' | '.' | ',' => cmd,
+            _ => '\0',
+        };
+        if byte != '\0' {
+            self.commands.push(cmd);
+        }
+    }
+
+    fn feed_line(&mut self, line: &str) {
+        for cmd in line.chars() {
+            self.feed_char(cmd);
+        }
+    }
+
+    fn current_cmd(&self) -> char {
+        self.commands[self.pointer]
+    }
+
+    fn execute(&mut self) {
+        if self.pointer >= self.commands.len() {
+            return;
+        }
+        match self.current_cmd() {
+            '+' => self.tape.increment(),
+            '-' => self.tape.decrement(),
+            '>' => self.tape.shift_right(),
+            '<' => self.tape.shift_left(),
+            '.' => println!("{}", self.tape.char()),
+            _ => ()
+        };
+        self.pointer += 1;
+        self.execute();
+    }
+}
+
 fn main() {
-    let mut tape = Tape::new();
-    tape.set(3);
-    tape.increment();
-    tape.shift_right();
-    tape.increment();
-    tape.shift_left();
-    tape.shift_left();
-    tape.decrement();
-    println!("Value: {}", tape.get())
+    let mut program = Program::new();
+    program.feed_line("+++++++++++++++++++++++++++++++++...");
+    program.execute();
 }
 
 #[cfg(test)]
