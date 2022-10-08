@@ -1,4 +1,6 @@
-#![allow(dead_code)]
+use std::io::stdin;
+use std::env;
+
 struct Tape {
     pointer: usize,
     vec: Vec<u8>,
@@ -170,14 +172,33 @@ impl Program {
                 };
                 self.execute();
             }
+            ',' => {
+                self.read_input();
+            }
             _ => (),
         };
         self.pointer += 1;
         self.execute();
     }
+
+    fn read_input(&mut self) {
+        let mut input_string = String::new();
+        stdin().read_line(&mut input_string)
+            .ok()
+            .expect("Failed to read line");
+        let input = input_string.chars().nth(0).unwrap();
+        self.tape.set(input as u8);
+    }
 }
 
-fn main() {}
+fn main() {
+    let args: Vec<String> = env::args().collect();
+    let filepath = &args[1];
+    dbg!(filepath);
+    let mut program = Program::new();
+    program.feed_line("++.");
+    program.execute();
+}
 
 #[cfg(test)]
 mod tests {
