@@ -1,5 +1,7 @@
-use std::io::stdin;
+use std::fs::File;
+use std::io::{stdin, self, Lines, BufRead};
 use std::env;
+use std::path::Path;
 
 struct Tape {
     pointer: usize,
@@ -191,12 +193,25 @@ impl Program {
     }
 }
 
+fn read_lines<P>(filename: P) -> io::Result<Lines<io::BufReader<File>>>
+where P: AsRef<Path> {
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let filepath = &args[1];
-    dbg!(filepath);
     let mut program = Program::new();
-    program.feed_line("++.");
+
+    if let Ok(lines) = read_lines(filepath) {
+        for line in lines {
+            if let Ok(codeline) = line {
+                program.feed_line(&codeline);
+            }
+        }
+    }
+
     program.execute();
 }
 
