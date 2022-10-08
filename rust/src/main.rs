@@ -152,7 +152,7 @@ impl Program {
             '<' => self.tape.shift_left(),
             '.' => {
                 self.out.push(self.tape.char());
-                println!("{}", self.tape.char());
+                print!("{}", self.tape.char());
             }
             '[' => {
                 if self.tape.get() == 0 {
