@@ -2,3 +2,4 @@ bfi
 .vscode
 brainfuck-files
 .DS_STORE
+target/
