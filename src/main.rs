@@ -201,6 +201,10 @@ where P: AsRef<Path> {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+    if args.len() < 2 {
+        eprintln!("Usage: {} <file>", args[0]);
+        return;
+    }
     let filepath = &args[1];
     let mut program = Program::new();
 
@@ -210,9 +214,9 @@ fn main() {
                 program.feed_line(&codeline);
             }
         }
+        program.execute();
     }
 
-    program.execute();
 }
 
 #[cfg(test)]
